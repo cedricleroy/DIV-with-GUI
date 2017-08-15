@@ -1,34 +1,25 @@
 import sys
-import time
+from random import randint
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
-import serial
-import time
-import numpy as np
-from pylab import *
-import matplotlib.pyplot as plt
-from datetime import datetime
-import os
-from PIL import Image
+
 
 # ser=serial.Serial()
 # ser.baudrate = 57600
 # ser.port = 'COM5'
 # ser.timeout = 1
 
-class UI_MainWindow(QtWidgets.QWidget):
 
+class UI_MainWindow(QtWidgets.QWidget):
     def __init__(self) -> None:
         super(UI_MainWindow, self).__init__()
 
         self.measure = Measurements()
         self.measure.measurement_sig.connect(self.change_ui)
 
-        # self.measure.start()
-
         self.setObjectName("mainWindow")
-        self.resize(800,600)
+        self.resize(800, 600)
 
         horizontal_layout1 = QtWidgets.QHBoxLayout()
         horizontal_layout1.setObjectName("horizontal_layout1")
@@ -77,7 +68,7 @@ class UI_MainWindow(QtWidgets.QWidget):
 
         sample_measured = QtWidgets.QVBoxLayout()
         sample_measured.setObjectName("sample_measured")
-        self.sample_measuredLabel = QtWidgets.QLabel()
+        self.sample_measuredLabel = QtWidgets.QLabel()  # use snake_case
         self.sample_measuredLabel.setObjectName("sample_measuredLabel")
         sample_measured.addWidget(self.sample_measuredLabel)
         self.sample_measuredText = QtWidgets.QLabel()
@@ -105,10 +96,8 @@ class UI_MainWindow(QtWidgets.QWidget):
         rsh_measured.addWidget(self.rsh_measuredText)
         vertical_layout2.addLayout(rsh_measured)
 
-
         div = QtWidgets.QVBoxLayout()
         self.div_graph = QtWidgets.QLabel()
-        # self.div_graph_pix = QtGui.QPixmap('C:/Users/eso/Documents/Python Scripts/Python Project DIV/Test')
         self.div_graph_pix = QtGui.QPixmap(None)
         self.div_graph.resize(688, 473)
         self.div_graph.setPixmap(self.div_graph_pix)
@@ -137,12 +126,10 @@ class UI_MainWindow(QtWidgets.QWidget):
 
     def change_ui(self, measurements: str) -> None:
         _translate = QtCore.QCoreApplication.translate
-        print(y)
         self.rs_measuredText.setText(_translate("mainWindow", measurements))
         self.sample_measuredText.setText(_translate("mainWindow", "Waiting for Measurement Data"))
 
-    def click(self) ->None :
-        print(n)
+    def click(self) -> None:
         self.measure.start()
 
 class Measurements(QThread):
@@ -153,24 +140,14 @@ class Measurements(QThread):
         super(Measurements, self).__init__()
 
     def take_measurement(self) -> float:
-
-        rs_min = 2.5
+        rs_min = randint(0, 10)  # as an exmample instead of constant 2.5
         return rs_min
 
     def run(self) -> None:
-        print(y)
         rs_min = str(self.take_measurement())
-        print(yes1)
         self.measurement_sig.emit(rs_min)
-        print(yes2)
-        time.sleep(2)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     form = UI_MainWindow()
     sys.exit(app.exec_())
-
-
-
-
-
